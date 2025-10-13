@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import useSortableTable from "../../hooks/useSortableTable";
+
 import "./HomePage.css";
 
 interface Project {
@@ -10,6 +10,19 @@ interface Project {
   price: string;
   time: string;
 }
+
+interface Column {
+  key: keyof Project;
+  label: string;
+}
+
+const columns: Column[] = [
+  { key: "name", label: "Project" },
+  { key: "points", label: "Points" },
+  { key: "amount", label: "Amount" },
+  { key: "price", label: "Price" },
+  { key: "time", label: "Time" },
+];
 
 const testData: Project[] = [
   {
@@ -66,6 +79,28 @@ const futureData: Project[] = [
 ];
 
 const HomePage = () => {
+  const {
+    sortedData: sortedTodayData,
+    sortKey: sortKeyToday,
+    sortOrder: sortOrderToday,
+    toggleSort: toggleSortToday,
+  } = useSortableTable<Project>({
+    data: testData,
+    initialSortKey: "name",
+    initialSortOrder: "asc",
+  });
+
+  const {
+    sortedData: sortedFutureData,
+    sortKey: sortKeyFuture,
+    sortOrder: sortOrderFuture,
+    toggleSort: toggleSortFuture,
+  } = useSortableTable<Project>({
+    data: futureData,
+    initialSortKey: "name",
+    initialSortOrder: "asc",
+  });
+
   return (
     <div
       className="homepage"
@@ -76,15 +111,21 @@ const HomePage = () => {
         <table className="projects-table">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Points</th>
-              <th>Amount</th>
-              <th>Price</th>
-              <th>Time</th>
+              {columns.map((column) => (
+                <th
+                  key={column.key}
+                  onClick={() => toggleSortToday(column.key)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {column.label}
+                  {sortKeyToday === column.key &&
+                    (sortOrderToday === "asc" ? " ▲" : " ▼")}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {testData.map((item) => (
+            {sortedTodayData.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>{item.points}</td>
@@ -99,15 +140,21 @@ const HomePage = () => {
         <table className="projects-table">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Points</th>
-              <th>Amount</th>
-              <th>Price</th>
-              <th>Time</th>
+              {columns.map((column) => (
+                <th
+                  key={column.key}
+                  onClick={() => toggleSortFuture(column.key)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {column.label}
+                  {sortKeyFuture === column.key &&
+                    (sortOrderFuture === "asc" ? " ▲" : " ▼")}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {futureData.map((item) => (
+            {sortedFutureData.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>{item.points}</td>
