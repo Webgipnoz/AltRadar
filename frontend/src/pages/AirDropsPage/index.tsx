@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useSortableTable from "../../hooks/useSortableTable";
 
+import "./AirDropsPage.css";
+
 interface AirdropProject {
   id: number;
   project: string;
@@ -57,6 +59,8 @@ const airdropData: AirdropProject[] = [
 
 const AirDropsPage = () => {
   const [data, setData] = useState<AirdropProject[]>(airdropData);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleImportant = (id: number) => {
     setData((prev) =>
@@ -73,23 +77,55 @@ const AirDropsPage = () => {
     });
 
   return (
-    <div
-      className="homepage"
-      style={{ minHeight: "calc(100vh - 100px)", padding: "20px" }}
-    >
+    <div className="homepage">
       <div className="projects-table-container">
         <h2>Airdrops</h2>
         <table className="projects-table">
           <thead>
             <tr>
               {columns.map((col) => (
-                <th
-                  key={col.key}
-                  onClick={() => toggleSort(col.key)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {col.label}
-                  {sortKey === col.key && (sortOrder === "asc" ? " ▲" : " ▼")}
+                <th key={col.key} style={{ position: "relative" }}>
+                  <div>
+                    <span
+                      onClick={() => toggleSort(col.key)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {col.label}
+                      {sortKey === col.key &&
+                        (sortOrder === "asc" ? " ▲" : " ▼")}
+                    </span>
+
+                    {col.key === "project" && (
+                      <span
+                        onClick={() => setShowFilter((prev) => !prev)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        🔍
+                      </span>
+                    )}
+                  </div>
+
+                  {col.key === "project" && showFilter && (
+                    <div className="filter-panel">
+                      <h4>Filter</h4>
+                      <label>
+                        <input type="checkbox" /> Active
+                      </label>
+                      <label>
+                        <input type="checkbox" /> Completed
+                      </label>
+                      <label>
+                        <input type="checkbox" /> Archived
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Search by name..."
+                        className="filter-input"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                  )}
                 </th>
               ))}
             </tr>
