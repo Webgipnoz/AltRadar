@@ -1,0 +1,40 @@
+.filter-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  background: #ffcc00;
+  border-radius: 8px;
+  padding: 10px;
+  width: 180px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin-top: 6px;
+  text-align: left;
+}
+
+.filter-panel h4 {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.filter-panel label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.filter-input {
+  margin-top: 8px;
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  outline: none;
+}
+
+.filter-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
+}

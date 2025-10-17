@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useSortableTable from "../../hooks/useSortableTable";
 
-import "./AirDropsPage.css";
+import FilterPanel from "../../components/FilterPanel";
 
 interface AirdropProject {
   id: number;
@@ -10,6 +10,9 @@ interface AirdropProject {
   amount: string;
   mc: string;
   date: string;
+  isSpot: boolean;
+  isFutures: boolean;
+  isTge: boolean;
   important: boolean;
 }
 
@@ -35,7 +38,10 @@ const airdropData: AirdropProject[] = [
     amount: "5000",
     mc: "50k",
     date: "2025-10-01",
-    important: false,
+    isSpot: true,
+    isFutures: false,
+    isTge: false,
+    important: true,
   },
   {
     id: 2,
@@ -44,6 +50,9 @@ const airdropData: AirdropProject[] = [
     amount: "3000",
     mc: "30k",
     date: "2025-10-03",
+    isSpot: false,
+    isFutures: true,
+    isTge: false,
     important: true,
   },
   {
@@ -53,6 +62,9 @@ const airdropData: AirdropProject[] = [
     amount: "2000",
     mc: "20k",
     date: "2025-10-05",
+    isSpot: false,
+    isFutures: false,
+    isTge: true,
     important: false,
   },
 ];
@@ -61,6 +73,12 @@ const AirDropsPage = () => {
   const [data, setData] = useState<AirdropProject[]>(airdropData);
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [filters, setFilters] = useState({
+    isSpot: false,
+    isFutures: false,
+    isTge: false,
+  });
 
   const toggleImportant = (id: number) => {
     setData((prev) =>
@@ -76,6 +94,19 @@ const AirDropsPage = () => {
       initialSortOrder: "asc",
     });
 
+  const filteredData = sortedData.filter((item) => {
+    const matchesSearch = item.project
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesFilters =
+      (!filters.isSpot && !filters.isFutures && !filters.isTge) ||
+      (filters.isSpot && item.isSpot) ||
+      (filters.isFutures && item.isFutures) ||
+      (filters.isTge && item.isTge);
+
+    return matchesSearch && matchesFilters;
+  });
   return (
     <div className="homepage">
       <div className="projects-table-container">
@@ -106,32 +137,20 @@ const AirDropsPage = () => {
                   </div>
 
                   {col.key === "project" && showFilter && (
-                    <div className="filter-panel">
-                      <h4>Filter</h4>
-                      <label>
-                        <input type="checkbox" /> Active
-                      </label>
-                      <label>
-                        <input type="checkbox" /> Completed
-                      </label>
-                      <label>
-                        <input type="checkbox" /> Archived
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Search by name..."
-                        className="filter-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
+                    <FilterPanel
+                      filters={filters}
+                      searchQuery={searchQuery}
+                      onChangeFilters={setFilters}
+                      onChangeSearch={setSearchQuery}
+                      onClose={() => setShowFilter(false)}
+                    />
                   )}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {sortedData.map((item) => (
+            {filteredData.map((item) => (
               <tr key={item.id}>
                 <td
                   onClick={() => toggleImportant(item.id)}
