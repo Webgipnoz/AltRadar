@@ -26,7 +26,7 @@ const columns: Column[] = [
 const StabilityPage = () => {
   return (
     <div>
-      <h1>Stability Page</h1>
+      <h2>Stability Page</h2>
       <p>Welcome to the Stability Page!</p>
     </div>
   );
