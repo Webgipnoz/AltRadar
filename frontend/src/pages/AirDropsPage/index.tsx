@@ -87,6 +87,7 @@ const AirDropsPage = () => {
       )
     );
   };
+
   const { sortedData, sortKey, sortOrder, toggleSort } =
     useSortableTable<AirdropProject>({
       data: data,
@@ -152,17 +153,20 @@ const AirDropsPage = () => {
           <tbody>
             {filteredData.map((item) => (
               <tr key={item.id}>
-                <td
-                  onClick={() => toggleImportant(item.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {item.important ? "⭐" : "☆"}
-                </td>
-                <td>{item.project}</td>
-                <td>{item.points}</td>
-                <td>{item.amount}</td>
-                <td>{item.mc}</td>
-                <td>{item.date}</td>
+                {columns.map((col) => (
+                  <td key={col.key}>
+                    {col.key === "important" ? (
+                      <span
+                        onClick={() => toggleImportant(item.id)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {item.important ? "⭐" : "☆"}
+                      </span>
+                    ) : (
+                      item[col.key]
+                    )}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
