@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import useSortableTable from "../../hooks/useSortableTable";
+import FavoriteItem from "../../components/FavoriteItem";
 
 interface StabilityProject {
   id: number;
-  important: boolean;
+  favorite: boolean;
   project: string;
   stabilityValue: string;
   spreadBps: number;
@@ -22,7 +23,7 @@ const StabilityProject: StabilityProject[] = [
     stabilityValue: "Stable",
     spreadBps: 15,
     Xdays: 120,
-    important: true,
+    favorite: true,
   },
   {
     id: 2,
@@ -30,7 +31,7 @@ const StabilityProject: StabilityProject[] = [
     stabilityValue: "Moderate",
     spreadBps: 30,
     Xdays: 60,
-    important: false,
+    favorite: false,
   },
   {
     id: 3,
@@ -38,12 +39,12 @@ const StabilityProject: StabilityProject[] = [
     stabilityValue: "Unstable",
     spreadBps: 15,
     Xdays: 120,
-    important: true,
+    favorite: true,
   },
 ];
 
 const columns: Column[] = [
-  { key: "important", label: "☆" },
+  { key: "favorite", label: "☆" },
   { key: "project", label: "Project" },
   { key: "stabilityValue", label: "Stability" },
   { key: "spreadBps", label: "Spread BPS" },
@@ -61,11 +62,11 @@ const StabilityPage = () => {
     });
 
   const toggleImportant = (id: number) => {
-    setData((prev) => {
-      return prev.map((item) =>
-        item.id === id ? { ...item, important: !item.important } : item
-      );
-    });
+    setData((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, favorite: !item.favorite } : item
+      )
+    );
   };
 
   return (
@@ -96,13 +97,12 @@ const StabilityPage = () => {
               <tr key={item.id}>
                 {columns.map((col) => (
                   <td key={col.key}>
-                    {col.key === "important" ? (
-                      <span
-                        onClick={() => toggleImportant(item.id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {item.important ? "⭐" : "☆"}
-                      </span>
+                    {col.key === "favorite" ? (
+                      <FavoriteItem
+                        id={item.id}
+                        isFavorite={item.favorite}
+                        onToggleFavorite={toggleImportant}
+                      />
                     ) : (
                       item[col.key]
                     )}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import useSortableTable from "../../hooks/useSortableTable";
 
 import FilterPanel from "../../components/FilterPanel";
+import FavoriteItem from "../../components/FavoriteItem";
 
 interface AirdropProject {
   id: number;
@@ -13,7 +14,7 @@ interface AirdropProject {
   isSpot: boolean;
   isFutures: boolean;
   isTge: boolean;
-  important: boolean;
+  favorite: boolean;
 }
 
 interface Column {
@@ -22,7 +23,7 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { key: "important", label: "☆" },
+  { key: "favorite", label: "☆" },
   { key: "project", label: "Project" },
   { key: "points", label: "Points" },
   { key: "amount", label: "Amount" },
@@ -41,7 +42,7 @@ const airdropData: AirdropProject[] = [
     isSpot: true,
     isFutures: false,
     isTge: false,
-    important: true,
+    favorite: true,
   },
   {
     id: 2,
@@ -53,7 +54,7 @@ const airdropData: AirdropProject[] = [
     isSpot: false,
     isFutures: true,
     isTge: false,
-    important: true,
+    favorite: true,
   },
   {
     id: 3,
@@ -65,7 +66,7 @@ const airdropData: AirdropProject[] = [
     isSpot: false,
     isFutures: false,
     isTge: true,
-    important: false,
+    favorite: false,
   },
 ];
 
@@ -83,7 +84,7 @@ const AirDropsPage = () => {
   const toggleImportant = (id: number) => {
     setData((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, important: !item.important } : item
+        item.id === id ? { ...item, favorite: !item.favorite } : item
       )
     );
   };
@@ -155,13 +156,12 @@ const AirDropsPage = () => {
               <tr key={item.id}>
                 {columns.map((col) => (
                   <td key={col.key}>
-                    {col.key === "important" ? (
-                      <span
-                        onClick={() => toggleImportant(item.id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {item.important ? "⭐" : "☆"}
-                      </span>
+                    {col.key === "favorite" ? (
+                      <FavoriteItem
+                        id={item.id}
+                        isFavorite={item.favorite}
+                        onToggleFavorite={toggleImportant}
+                      />
                     ) : (
                       item[col.key]
                     )}
