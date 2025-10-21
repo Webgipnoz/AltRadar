@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import useSortableTable from "../../hooks/useSortableTable";
-import FavoriteItem from "../../components/FavoriteItem";
+import Table from "../../components/Table";
 
 interface StabilityProject {
   id: number;
@@ -16,7 +15,7 @@ interface Column {
   label: string;
 }
 
-const StabilityProject: StabilityProject[] = [
+const StabilityProjects: StabilityProject[] = [
   {
     id: 1,
     project: "AlphaAir",
@@ -52,67 +51,13 @@ const columns: Column[] = [
 ];
 
 const StabilityPage = () => {
-  const [data, setData] = useState<StabilityProject[]>(StabilityProject);
-
-  const { sortedData, sortKey, sortOrder, toggleSort } =
-    useSortableTable<StabilityProject>({
-      data: data,
-      initialSortKey: "project",
-      initialSortOrder: "asc",
-    });
-
-  const toggleImportant = (id: number) => {
-    setData((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, favorite: !item.favorite } : item
-      )
-    );
-  };
-
   return (
     <div className="stabilityPage">
-      <div className="projects-table-container">
-        <h2>Stability Page</h2>
-        <table className="projects-table">
-          <thead>
-            <tr>
-              {columns.map((col) => (
-                <th key={col.key}>
-                  <div>
-                    <span
-                      onClick={() => toggleSort(col.key)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {col.label}
-                      {sortKey === col.key &&
-                        (sortOrder === "asc" ? " ▲" : " ▼")}
-                    </span>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {sortedData.map((item) => (
-              <tr key={item.id}>
-                {columns.map((col) => (
-                  <td key={col.key}>
-                    {col.key === "favorite" ? (
-                      <FavoriteItem
-                        id={item.id}
-                        isFavorite={item.favorite}
-                        onToggleFavorite={toggleImportant}
-                      />
-                    ) : (
-                      item[col.key]
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table
+        tableHeader="Stability Projects"
+        columns={columns}
+        dataTable={StabilityProjects}
+      />
     </div>
   );
 };
