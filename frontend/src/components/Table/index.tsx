@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import FavoriteItem from "../FavoriteItem";
+import FilterPanel from "../../components/FilterPanel";
+
 import useSortableTable from "../../hooks/useSortableTable";
 
 interface Column<T> {
@@ -14,12 +16,19 @@ interface TableProps<T> {
   dataTable: T[];
 }
 
-const Table = <T extends { id: number; favorite?: boolean }>({
+const Table = <
+  T extends {
+    id: number;
+    favorite?: boolean;
+  }
+>({
   tableHeader,
   columns,
   dataTable,
 }: TableProps<T>) => {
   const [data, setData] = React.useState<T[]>(dataTable);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { sortedData, sortKey, sortOrder, toggleSort } = useSortableTable<T>({
     data,
@@ -35,6 +44,25 @@ const Table = <T extends { id: number; favorite?: boolean }>({
     );
   };
 
+  // const [filters, setFilters] = useState({
+  //   isSpot: false,
+  //   isFutures: false,
+  //   isTge: false,
+  // });
+
+  // const filteredData = sortedData.filter((item) => {
+  //   const matchesSearch = item.project
+  //     .toLowerCase()
+  //     .includes(searchQuery.toLowerCase());
+
+  //   const matchesFilters =
+  //     (!filters.isSpot && !filters.isFutures && !filters.isTge) ||
+  //     (filters.isSpot && item.isSpot) ||
+  //     (filters.isFutures && item.isFutures) ||
+  //     (filters.isTge && item.isTge);
+
+  //   return matchesSearch && matchesFilters;
+  // });
   return (
     <div className="projects-table-container">
       <h2>{tableHeader}</h2>
