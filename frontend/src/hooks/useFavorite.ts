@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-export function useFavorite<T extends { id: number; favorite?: boolean }>(
+export function useFavorite<T extends { id: number; favorite: boolean }>(
   initialData: T[]
 ) {
   const [data, setData] = useState<T[]>(initialData);

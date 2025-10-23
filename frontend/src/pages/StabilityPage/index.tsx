@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Table from "../../components/Table";
+import { useFavorite } from "../../hooks/useFavorite";
 
 interface StabilityProject {
   id: number;
@@ -51,12 +52,16 @@ const columns: Column[] = [
 ];
 
 const StabilityPage = () => {
+  const { data, toggleFavorite } = useFavorite(StabilityProjects);
+
   return (
     <div className="stabilityPage">
       <Table
         tableHeader="Stability Projects"
         columns={columns}
-        dataTable={StabilityProjects}
+        dataTable={data}
+        withFavorite={true}
+        favoriteLogic={{ data, toggleFavorite }}
       />
     </div>
   );

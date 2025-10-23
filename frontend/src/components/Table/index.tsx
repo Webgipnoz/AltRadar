@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import FavoriteItem from "../FavoriteItem";
 import FilterPanel from "../../components/FilterPanel";
 
 import useSortableTable from "../../hooks/useSortableTable";
-import { useFavorite } from "../../hooks/useFavorite";
 
 interface Column<T> {
   key: keyof T;
@@ -11,53 +10,37 @@ interface Column<T> {
   sortable?: boolean;
 }
 
-interface TableProps<T> {
+interface BaseRow {
+  id: number;
+  favorite?: boolean;
+}
+
+interface TableProps<T extends BaseRow> {
   tableHeader: string;
   columns: Column<T>[];
   dataTable: T[];
   withFilters?: boolean;
   withFavorite?: boolean;
+  favoriteLogic?: {
+    data: any[];
+    toggleFavorite: (id: number) => void;
+  };
 }
 
-const Table = <
-  T extends {
-    id: number;
-    favorite?: boolean;
-  }
->({
+const Table = <T extends BaseRow>({
   tableHeader,
   columns,
   dataTable,
+  withFavorite,
+  withFilters,
+  favoriteLogic,
 }: TableProps<T>) => {
-  const { data, toggleFavorite } = useFavorite<T>(dataTable);
-  const [showFilter, setShowFilter] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
   const { sortedData, sortKey, sortOrder, toggleSort } = useSortableTable<T>({
-    data,
+    data: withFavorite && favoriteLogic ? favoriteLogic.data : dataTable,
     initialSortKey: columns[0].key,
     initialSortOrder: "desc",
   });
 
-  // const [filters, setFilters] = useState({
-  //   isSpot: false,
-  //   isFutures: false,
-  //   isTge: false,
-  // });
-
-  // const filteredData = sortedData.filter((item) => {
-  //   const matchesSearch = item.project
-  //     .toLowerCase()
-  //     .includes(searchQuery.toLowerCase());
-
-  //   const matchesFilters =
-  //     (!filters.isSpot && !filters.isFutures && !filters.isTge) ||
-  //     (filters.isSpot && item.isSpot) ||
-  //     (filters.isFutures && item.isFutures) ||
-  //     (filters.isTge && item.isTge);
-
-  //   return matchesSearch && matchesFilters;
-  // });
   return (
     <div className="projects-table-container">
       <h2>{tableHeader}</h2>
@@ -81,11 +64,11 @@ const Table = <
             <tr key={item.id}>
               {columns.map((col) => (
                 <td key={String(col.key)}>
-                  {col.key === "favorite" ? (
+                  {withFavorite && col.key === "favorite" ? (
                     <FavoriteItem
                       id={item.id}
                       isFavorite={!!item.favorite}
-                      onToggleFavorite={toggleFavorite}
+                      onToggleFavorite={favoriteLogic?.toggleFavorite!}
                     />
                   ) : (
                     String(item[col.key])
