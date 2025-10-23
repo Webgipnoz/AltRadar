@@ -3,6 +3,7 @@ import FavoriteItem from "../FavoriteItem";
 import FilterPanel from "../../components/FilterPanel";
 
 import useSortableTable from "../../hooks/useSortableTable";
+import { useFavorite } from "../../hooks/useFavorite";
 
 interface Column<T> {
   key: keyof T;
@@ -14,6 +15,8 @@ interface TableProps<T> {
   tableHeader: string;
   columns: Column<T>[];
   dataTable: T[];
+  withFilters?: boolean;
+  withFavorite?: boolean;
 }
 
 const Table = <
@@ -26,7 +29,7 @@ const Table = <
   columns,
   dataTable,
 }: TableProps<T>) => {
-  const [data, setData] = React.useState<T[]>(dataTable);
+  const { data, toggleFavorite } = useFavorite<T>(dataTable);
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -35,14 +38,6 @@ const Table = <
     initialSortKey: columns[0].key,
     initialSortOrder: "desc",
   });
-
-  const toggleImportant = (id: number) => {
-    setData((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, favorite: !item.favorite } : item
-      )
-    );
-  };
 
   // const [filters, setFilters] = useState({
   //   isSpot: false,
@@ -90,7 +85,7 @@ const Table = <
                     <FavoriteItem
                       id={item.id}
                       isFavorite={!!item.favorite}
-                      onToggleFavorite={toggleImportant}
+                      onToggleFavorite={toggleFavorite}
                     />
                   ) : (
                     String(item[col.key])
