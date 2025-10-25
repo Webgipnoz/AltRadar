@@ -1,4 +1,4 @@
-export interface baseRow {
+export interface BaseRow {
   id: number;
   favorite?: boolean;
   filter?: boolean;

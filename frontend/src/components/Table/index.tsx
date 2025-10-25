@@ -4,16 +4,7 @@ import FilterPanel from "../../components/FilterPanel";
 
 import useSortableTable from "../../hooks/useSortableTable";
 
-interface Column<T> {
-  key: keyof T;
-  label: string;
-  sortable?: boolean;
-}
-
-interface BaseRow {
-  id: number;
-  favorite?: boolean;
-}
+import { Column, BaseRow } from "../../types/tables";
 
 interface TableProps<T extends BaseRow> {
   tableHeader: string;
