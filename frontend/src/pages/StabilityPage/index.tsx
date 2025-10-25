@@ -1,58 +1,21 @@
-import React, { useState } from "react";
 import Table from "../../components/Table";
 import { useFavorite } from "../../hooks/useFavorite";
 
-interface StabilityProject {
-  id: number;
-  favorite: boolean;
-  project: string;
-  stabilityValue: string;
-  spreadBps: number;
-  Xdays: number;
-}
+import { Column } from "../../types/tables";
+import { Project } from "../../types/project";
 
-interface Column {
-  key: keyof StabilityProject;
-  label: string;
-}
+import { projectsData } from "../../data/projectsData";
 
-const StabilityProjects: StabilityProject[] = [
-  {
-    id: 1,
-    project: "AlphaAir",
-    stabilityValue: "Stable",
-    spreadBps: 15,
-    Xdays: 120,
-    favorite: true,
-  },
-  {
-    id: 2,
-    project: "BetaDrop",
-    stabilityValue: "Moderate",
-    spreadBps: 30,
-    Xdays: 60,
-    favorite: false,
-  },
-  {
-    id: 3,
-    project: "GammaAir",
-    stabilityValue: "Unstable",
-    spreadBps: 15,
-    Xdays: 120,
-    favorite: true,
-  },
-];
-
-const columns: Column[] = [
+const columns: Column<Project>[] = [
   { key: "favorite", label: "☆" },
-  { key: "project", label: "Project" },
+  { key: "name", label: "Project" },
   { key: "stabilityValue", label: "Stability" },
   { key: "spreadBps", label: "Spread BPS" },
   { key: "Xdays", label: "4X Days" },
 ];
 
 const StabilityPage = () => {
-  const { data, toggleFavorite } = useFavorite(StabilityProjects);
+  const { data, toggleFavorite } = useFavorite(projectsData);
 
   return (
     <div className="stabilityPage">

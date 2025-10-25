@@ -1,77 +1,26 @@
 import { useState } from "react";
-import useSortableTable from "../../hooks/useSortableTable";
 
 import FilterPanel from "../../components/FilterPanel";
 import FavoriteItem from "../../components/FavoriteItem";
 
-interface AirdropProject {
-  id: number;
-  project: string;
-  points: number;
-  amount: string;
-  mc: string;
-  date: string;
-  isSpot: boolean;
-  isFutures: boolean;
-  isTge: boolean;
-  favorite: boolean;
-}
+import useSortableTable from "../../hooks/useSortableTable";
 
-interface Column {
-  key: keyof AirdropProject;
-  label: string;
-}
+import { Column } from "../../types/tables";
+import { Project } from "../../types/project";
 
-const columns: Column[] = [
+import { projectsData } from "../../data/projectsData";
+
+const columns: Column<Project>[] = [
   { key: "favorite", label: "☆" },
-  { key: "project", label: "Project" },
+  { key: "name", label: "Project" },
   { key: "points", label: "Points" },
   { key: "amount", label: "Amount" },
   { key: "mc", label: "MC" },
   { key: "date", label: "Date" },
 ];
 
-const airdropData: AirdropProject[] = [
-  {
-    id: 1,
-    project: "AlphaAir",
-    points: 120,
-    amount: "5000",
-    mc: "50k",
-    date: "2025-10-01",
-    isSpot: true,
-    isFutures: false,
-    isTge: false,
-    favorite: true,
-  },
-  {
-    id: 2,
-    project: "BetaDrop",
-    points: 95,
-    amount: "3000",
-    mc: "30k",
-    date: "2025-10-03",
-    isSpot: false,
-    isFutures: true,
-    isTge: false,
-    favorite: true,
-  },
-  {
-    id: 3,
-    project: "GammaAir",
-    points: 70,
-    amount: "2000",
-    mc: "20k",
-    date: "2025-10-05",
-    isSpot: false,
-    isFutures: false,
-    isTge: true,
-    favorite: false,
-  },
-];
-
 const AirDropsPage = () => {
-  const [data, setData] = useState<AirdropProject[]>(airdropData);
+  const [data, setData] = useState<Project[]>(projectsData);
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -90,14 +39,14 @@ const AirDropsPage = () => {
   };
 
   const { sortedData, sortKey, sortOrder, toggleSort } =
-    useSortableTable<AirdropProject>({
+    useSortableTable<Project>({
       data: data,
-      initialSortKey: "project",
+      initialSortKey: "name",
       initialSortOrder: "asc",
     });
 
   const filteredData = sortedData.filter((item) => {
-    const matchesSearch = item.project
+    const matchesSearch = item.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
 
@@ -128,7 +77,7 @@ const AirDropsPage = () => {
                         (sortOrder === "asc" ? " ▲" : " ▼")}
                     </span>
 
-                    {col.key === "project" && (
+                    {col.key === "name" && (
                       <span
                         onClick={() => setShowFilter((prev) => !prev)}
                         style={{ cursor: "pointer" }}
@@ -138,7 +87,7 @@ const AirDropsPage = () => {
                     )}
                   </div>
 
-                  {col.key === "project" && showFilter && (
+                  {col.key === "name" && showFilter && (
                     <FilterPanel
                       filters={filters}
                       searchQuery={searchQuery}

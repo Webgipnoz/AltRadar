@@ -1,22 +1,13 @@
 import Table from "../../components/Table";
 
+import { Column } from "../../types/tables";
+import { Project } from "../../types/project";
+
+import { projectsData } from "../../data/projectsData";
+
 import "./HomePage.css";
 
-interface Project {
-  id: number;
-  name: string;
-  points: number;
-  amount: number;
-  price: string;
-  time: string;
-}
-
-interface Column {
-  key: keyof Project;
-  label: string;
-}
-
-const columns: Column[] = [
+const columns: Column<Project>[] = [
   { key: "name", label: "Project" },
   { key: "points", label: "Points" },
   { key: "amount", label: "Amount" },
@@ -24,76 +15,19 @@ const columns: Column[] = [
   { key: "time", label: "Time" },
 ];
 
-const testData: Project[] = [
-  {
-    id: 1,
-    name: "AlphaCoin",
-    points: 120,
-    amount: 500,
-    price: "0.05 USDT",
-    time: "14:00",
-  },
-  {
-    id: 2,
-    name: "BetaToken",
-    points: 95,
-    amount: 500,
-    price: "0.05 USDT",
-    time: "14:00",
-  },
-  {
-    id: 3,
-    name: "Gamma",
-    points: 70,
-    amount: 500,
-    price: "0.02 USDT",
-    time: "09:15",
-  },
-];
-
-const futureData: Project[] = [
-  {
-    id: 1,
-    name: "AlphaCoin",
-    points: 120,
-    amount: 500,
-    price: "0.05 USDT",
-    time: "14:00",
-  },
-  {
-    id: 2,
-    name: "BetaToken",
-    points: 95,
-    amount: 500,
-    price: "0.05 USDT",
-    time: "14:00",
-  },
-  {
-    id: 3,
-    name: "Gamma",
-    points: 70,
-    amount: 500,
-    price: "0.02 USDT",
-    time: "09:15",
-  },
-];
-
 const HomePage = () => {
   return (
-    <div
-      className="homepage"
-      style={{ minHeight: "calc(100vh - 100px)", padding: "20px" }}
-    >
+    <div className="homepage">
       <Table
         tableHeader="Today's Projects"
         columns={columns}
-        dataTable={testData}
+        dataTable={projectsData}
       />
 
       <Table
         tableHeader="Future Projects"
         columns={columns}
-        dataTable={futureData}
+        dataTable={projectsData}
       />
     </div>
   );
