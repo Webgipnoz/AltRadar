@@ -12,7 +12,7 @@ import { projectsData } from "../../data/projectsData";
 
 const columns: Column<Project>[] = [
   { key: "favorite", label: "☆" },
-  { key: "name", label: "Project" },
+  { key: "name", label: "Projects" },
   { key: "points", label: "Points" },
   { key: "amount", label: "Amount" },
   { key: "mc", label: "MC" },
