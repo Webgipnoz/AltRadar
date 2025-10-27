@@ -1,10 +1,19 @@
-import React from "react";
-import FavoriteItem from "../FavoriteItem";
+import { useState } from "react";
+import FavoriteItem from "../../components/FavoriteItem";
 import FilterPanel from "../../components/FilterPanel";
 
 import useSortableTable from "../../hooks/useSortableTable";
 
 import { Column, BaseRow } from "../../types/tables";
+
+interface FiltersLogic<T extends Record<string, boolean>> {
+  filters: T;
+  searchQuery: string;
+  onChangeFilters: (newFilters: T) => void;
+  onChangeSearch: (newQuery: string) => void;
+  isOpen: boolean;
+  onClose?: () => void;
+}
 
 interface TableProps<T extends BaseRow> {
   tableHeader: string;
@@ -16,6 +25,7 @@ interface TableProps<T extends BaseRow> {
     data: any[];
     toggleFavorite: (id: number) => void;
   };
+  filtersLogic?: FiltersLogic<any>;
 }
 
 const Table = <T extends BaseRow>({
@@ -25,12 +35,14 @@ const Table = <T extends BaseRow>({
   withFavorite,
   withFilters,
   favoriteLogic,
+  filtersLogic,
 }: TableProps<T>) => {
   const { sortedData, sortKey, sortOrder, toggleSort } = useSortableTable<T>({
     data: withFavorite && favoriteLogic ? favoriteLogic.data : dataTable,
     initialSortKey: columns[0].key,
     initialSortOrder: "desc",
   });
+  const [showFilter, setShowFilter] = useState(false);
 
   return (
     <div className="projects-table-container">
@@ -39,13 +51,38 @@ const Table = <T extends BaseRow>({
         <thead>
           <tr>
             {columns.map((col) => (
-              <th
-                key={String(col.key)}
-                onClick={() => toggleSort(col.key)}
-                style={{ cursor: "pointer" }}
-              >
-                {col.label}
-                {sortKey === col.key && (sortOrder === "asc" ? " ▲" : " ▼")}
+              <th key={String(col.key)} style={{ cursor: "pointer" }}>
+                <>
+                  <span onClick={() => toggleSort(col.key)}>
+                    {col.label}
+                    {sortKey === col.key && (sortOrder === "asc" ? " ▲" : " ▼")}
+                  </span>
+
+                  {withFilters && col.key === "name" && (
+                    <span
+                      onClick={() => {
+                        setShowFilter((prev) => !prev);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      🔍
+                    </span>
+                  )}
+                </>
+                {withFilters &&
+                  showFilter &&
+                  col.key === "name" &&
+                  filtersLogic && (
+                    <div style={{ position: "absolute" }}>
+                      <FilterPanel
+                        filters={filtersLogic.filters}
+                        searchQuery={filtersLogic.searchQuery}
+                        onChangeFilters={filtersLogic.onChangeFilters}
+                        onChangeSearch={filtersLogic.onChangeSearch}
+                        onClose={() => setShowFilter(false)}
+                      />
+                    </div>
+                  )}
               </th>
             ))}
           </tr>

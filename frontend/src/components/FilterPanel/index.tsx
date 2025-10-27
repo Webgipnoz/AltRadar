@@ -1,17 +1,21 @@
 import { useEffect, useRef } from "react";
 import "./FilterPanel.css";
 
-interface FilterPanelProps {
-  filters: { isSpot: boolean; isFutures: boolean; isTge: boolean };
+interface FilterPanelProps<T extends Record<string, boolean>> {
+  filters: T;
   searchQuery: string;
-  onChangeFilters: (newFilters: any) => void;
+  onChangeFilters: (newFilters: T) => void;
   onChangeSearch: (newQuery: string) => void;
   onClose: () => void;
 }
 
-const FilterPanel = (props: FilterPanelProps) => {
-  const { filters, searchQuery, onChangeFilters, onChangeSearch, onClose } =
-    props;
+function FilterPanel<T extends Record<string, boolean>>({
+  filters,
+  searchQuery,
+  onChangeFilters,
+  onChangeSearch,
+  onClose,
+}: FilterPanelProps<T>) {
   const panelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -24,8 +28,16 @@ const FilterPanel = (props: FilterPanelProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  const handleCheckboxChange = (key: keyof typeof filters) => {
+  const handleCheckboxChange = (key: keyof T) => {
     onChangeFilters({ ...filters, [key]: !filters[key] });
+  };
+
+  const formatLabel = (key: string): string => {
+    return key
+      .replace(/^is/, "")
+      .replace(/([A-Z])/g, " $1")
+      .trim()
+      .replace(/^./, (s) => s.toUpperCase());
   };
 
   return (
@@ -40,33 +52,19 @@ const FilterPanel = (props: FilterPanelProps) => {
       />
 
       <div className="checkbox-group">
-        <label>
-          <input
-            type="checkbox"
-            checked={filters.isSpot}
-            onChange={() => handleCheckboxChange("isSpot")}
-          />
-          Spot
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={filters.isFutures}
-            onChange={() => handleCheckboxChange("isFutures")}
-          />
-          Futures
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={filters.isTge}
-            onChange={() => handleCheckboxChange("isTge")}
-          />
-          TGE
-        </label>
+        {Object.entries(filters).map(([key, value]) => (
+          <label key={key}>
+            <input
+              type="checkbox"
+              checked={value}
+              onChange={() => handleCheckboxChange(key as keyof T)}
+            />
+            {formatLabel(key)}
+          </label>
+        ))}
       </div>
     </div>
   );
-};
+}
 
 export default FilterPanel;
