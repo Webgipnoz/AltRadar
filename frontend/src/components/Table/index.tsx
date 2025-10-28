@@ -38,7 +38,7 @@ const Table = <T extends BaseRow>({
   filtersLogic,
 }: TableProps<T>) => {
   const { sortedData, sortKey, sortOrder, toggleSort } = useSortableTable<T>({
-    data: withFavorite && favoriteLogic ? favoriteLogic.data : dataTable,
+    data: dataTable,
     initialSortKey: columns[0].key,
     initialSortOrder: "desc",
   });

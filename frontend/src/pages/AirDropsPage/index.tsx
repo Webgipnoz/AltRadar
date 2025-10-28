@@ -29,16 +29,6 @@ const AirDropsPage = () => {
       isTge: false,
     });
 
-  const onChangeFilters = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-  };
-
-  const onChangeSearch = (newQuery: string) => {
-    setSearchQuery(newQuery);
-  };
-
-  const onClose = () => setIsOpen(false);
-
   return (
     <div className="homepage">
       <Table
@@ -49,9 +39,8 @@ const AirDropsPage = () => {
         filtersLogic={{
           filters,
           searchQuery,
-          onChangeFilters,
-          onChangeSearch,
-          onClose,
+          onChangeFilters: setFilters,
+          onChangeSearch: setSearchQuery,
           isOpen,
         }}
         withFavorite={true}
