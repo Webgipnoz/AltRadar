@@ -11,8 +11,6 @@ interface FiltersLogic<T extends Record<string, boolean>> {
   searchQuery: string;
   onChangeFilters: (newFilters: T) => void;
   onChangeSearch: (newQuery: string) => void;
-  isOpen: boolean;
-  onClose?: () => void;
 }
 
 interface TableProps<T extends BaseRow> {

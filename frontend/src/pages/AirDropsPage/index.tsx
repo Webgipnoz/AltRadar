@@ -20,7 +20,6 @@ const columns: Column<Project>[] = [
 
 const AirDropsPage = () => {
   const { data, toggleFavorite } = useFavorite(projectsData);
-  const [isOpen, setIsOpen] = useState(true);
 
   const { filteredData, filters, setFilters, searchQuery, setSearchQuery } =
     useFilteredData<Project>(data, {
@@ -41,7 +40,6 @@ const AirDropsPage = () => {
           searchQuery,
           onChangeFilters: setFilters,
           onChangeSearch: setSearchQuery,
-          isOpen,
         }}
         withFavorite={true}
         favoriteLogic={{ data, toggleFavorite }}
